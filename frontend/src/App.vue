@@ -1,7 +1,23 @@
 <script setup>
 import {RouterView} from "vue-router";
-import {onMounted} from "vue";
-// import openai from "@/service/assistant.js";
+import {onMounted, ref} from "vue";
+const response = ref('');
+
+async function fetchOpenAIResponse() {
+  try {
+    const res = await fetch(import.meta.env.VITE_OPENAI_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prompt: '' })
+    });
+    const data = await res.json();
+    response.value = data.message.content;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
 
 onMounted(() => {
   // console.log(openai);
@@ -13,6 +29,9 @@ onMounted(() => {
     <div class="wrapper">
       Hello! Here will be Form
     </div>
+    <button @click="fetchOpenAIResponse">Submit</button>
+
+    <p>{{response}}</p>
   </header>
 
   <RouterView />
