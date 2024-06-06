@@ -1,5 +1,11 @@
 <script setup>
 import {RouterView} from "vue-router";
+import {onMounted} from "vue";
+// import openai from "@/service/assistant.js";
+
+onMounted(() => {
+  // console.log(openai);
+});
 </script>
 
 <template>
