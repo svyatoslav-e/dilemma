@@ -1,7 +1,12 @@
 <script setup>
 import {RouterView} from "vue-router";
 import {onMounted, ref} from "vue";
-const response = ref('');
+
+const messages = ref([]);
+const message = ref({
+  role: "user",
+  content: ""
+});
 
 async function fetchOpenAIResponse() {
   try {
@@ -10,13 +15,19 @@ async function fetchOpenAIResponse() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ prompt: '' })
+      body: JSON.stringify({ messages: messages.value })
     });
     const data = await res.json();
-    response.value = data.message.content;
+    messages.value.push(data.message);
   } catch (error) {
     console.error('Error:', error);
   }
+}
+
+async function handleSubmit() {
+  messages.value.push({ ...message.value });
+  await fetchOpenAIResponse();
+  message.value = { role: "user", content: '' };
 }
 
 onMounted(() => {
@@ -27,12 +38,19 @@ onMounted(() => {
 <template>
   <header>
     <div class="wrapper">
-      Hello! Here will be Form
+      <h1>OpenAI Chatbot</h1>
     </div>
-    <button @click="fetchOpenAIResponse">Submit</button>
-
-    <p>{{response}}</p>
   </header>
+
+  <form @submit.prevent>
+    <input type="text" placeholder="Type your message here" v-model="message.content">
+    <button type="submit" @click="handleSubmit">Send</button>
+  </form>
+
+  <div v-for="(msg) in messages" :key="msg.content">
+    <p>{{ msg.user }}</p>
+    <p>{{ msg.content }}</p>
+  </div>
 
   <RouterView />
 </template>
