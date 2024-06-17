@@ -9,9 +9,9 @@
 const {initializeApp} = require("firebase-admin/app");
 const {onRequest} = require("firebase-functions/v2/https");
 const OpenAI = require("openai");
-const {defineSecret, defineString} = require("firebase-functions/params");
+const {defineString} = require("firebase-functions/params");
 
-const apiKey = defineSecret("OPENAI_API_KEY");
+const apiKey = defineString("OPENAI_API_KEY");
 const organizationId = defineString("OPENAI_ORGANIZATION_ID");
 
 // Create and deploy your first functions
@@ -19,34 +19,28 @@ const organizationId = defineString("OPENAI_ORGANIZATION_ID");
 
 initializeApp();
 
-const openai = new OpenAI({
-  organization: organizationId,
-  apiKey: apiKey,
-});
-
 /**
  * Represents a chat function.
  * @param {array} messages - Messages collection.
  */
-async function main(messages) {
-  const completion = await openai.chat.completions.create({
-    messages,
-    model: "gpt-3.5-turbo",
-  });
-
-  console.log(completion.choices[0]);
-
-  return completion.choices[0];
-}
 
 exports.chat = onRequest({cors: [/dilemma-demo\.web\.app/]},
     async (req, res) => {
       const {messages} = req.body;
 
-      try {
-        const resp = await main(messages);
+      const openai = new OpenAI({
+        organization: process.env.OPENAI_ORGANIZATION_ID ||
+            organizationId.value(),
+        apiKey: process.env.OPENAI_API_KEY || apiKey.value(),
+      });
 
-        res.json(resp);
+      try {
+        const resp = await openai.chat.completions.create({
+          messages,
+          model: "gpt-3.5-turbo",
+        });
+
+        res.json(resp.choices[0]);
       } catch (error) {
         console.log(error);
         res.status(500).send("Internal Server Error");

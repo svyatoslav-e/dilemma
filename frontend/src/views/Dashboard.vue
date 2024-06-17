@@ -1,33 +1,24 @@
 <script setup>
+import {RouterLink} from "vue-router";
+import models from "../../data/models.js";
 import MegaChat from "@/components/MegaChat.vue";
-
-const MODELS = [
-  {
-    id: "text-davinci-002",
-    name: "Partner",
-    description: "Generate a partner for a given person."
-  },
-  {
-    id: "text-davinci-003",
-    name: "Startup",
-    description: "Generate a startup idea."
-  },
-];
 
 
 </script>
 
 <template>
   <div class="dashboard">
-   <div class="dashboard__section">
-     <h2>Try predefined models</h2>
-     <div class="models">
-       <div v-for="model in MODELS" class="models__item" :key="model.id">
-         <h3>{{ model.name }}</h3>
-         <p>{{ model.description }}</p>
-       </div>
-     </div>
-   </div>
+    <div class="dashboard__section">
+      <h2>Try predefined models</h2>
+      <div class="models">
+        <div v-for="model in models" class="models__item" :key="model.id">
+          <RouterLink :to="{name: 'model', params: {id: model.id}}">
+            <h3>{{ model.title }}</h3>
+            <p>{{ model.description }}</p>
+          </RouterLink>
+        </div>
+      </div>
+    </div>
     <div class="dashboard__section"></div>
     <div class="dashboard__section chat">
       <h2>Chat with mega brain</h2>
@@ -59,7 +50,9 @@ const MODELS = [
     display: flex;
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle at 100% 100%, #ffffff 0, #ffffff 3px, transparent 3px) 0% 0%/8px 8px no-repeat,
+    padding: 15px;
+    flex-direction: column;
+    background: radial-gradient(circle at 100% 100%, #ffffff 0, #ffffff 3px, transparent 3px) 0 0/8px 8px no-repeat,
     radial-gradient(circle at 0 100%, #ffffff 0, #ffffff 3px, transparent 3px) 100% 0%/8px 8px no-repeat,
     radial-gradient(circle at 100% 0, #ffffff 0, #ffffff 3px, transparent 3px) 0% 100%/8px 8px no-repeat,
     radial-gradient(circle at 0 0, #ffffff 0, #ffffff 3px, transparent 3px) 100% 100%/8px 8px no-repeat,
