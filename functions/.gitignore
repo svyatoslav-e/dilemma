@@ -1,2 +1,5 @@
 node_modules/
 *.local
+firestore-debug.log
+ui-debug.log
+.env
