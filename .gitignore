@@ -1,8 +1,14 @@
 node_modules
 .idea
 .vscode
-backend/node_modules
-backend/.env
+.env
+functions/node_modules
+functions/.env
 frontend/node_modules
 frontend/.env.local
 .env.local
+frontend/dist
+functions/firestore-debug.log
+.firebase
+firebase-debug.log
+dist
